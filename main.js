@@ -1,12 +1,14 @@
 // Tobiasz Witalis, Wojciech Wielochowski, Jakub Sosna
 
-document.addEventListener("mousemove", drawPath);
-document.addEventListener("mousedown", setPosition);
-document.addEventListener("mouseup", drawPoint);
-document.addEventListener("mouseenter", setPosition);
+var canvas = document.getElementById("main_canvas");
+
+canvas.addEventListener("mousemove", drawPath);
+canvas.addEventListener("mousedown", setPosition);
+canvas.addEventListener("mouseup", drawPoint);
+canvas.addEventListener("mouseenter", setPosition);
 
 
-var canvas = document.getElementById("main_canvas").getContext("2d");
+var context = canvas.getContext("2d");
 
 var posX = 0;
 var posY = 0;
@@ -22,32 +24,42 @@ function setPosition(e) {
 function drawPath(e) {
     if (e.buttons !== 1) return;
 
-    canvas.beginPath();
+    setCanvasProperties();
 
-    canvas.moveTo(posX, posY);
+    context.beginPath();
+
+    context.moveTo(posX, posY);
     setPosition(e);
-    canvas.lineTo(posX, posY);
+    context.lineTo(posX, posY);
 
-    canvas.stroke();
+    context.stroke();
 }
 
 function drawPoint(e) {
-    canvas.beginPath();
+    context.beginPath();
 
-    canvas.moveTo(posX, posY);
-    canvas.lineTo(posX - 1, posY);
+    context.moveTo(posX, posY);
+    context.lineTo(posX - 1, posY);
 
-    canvas.stroke();
+    context.stroke();
 }
 
 function setCanvasProperties() {
-    canvas.lineWidth = 10;
-    canvas.strokeStyle = "#000";
-    canvas.lineCap = "round";
+    context.lineWidth = document.getElementById("line_width_picker").value;
+    context.strokeStyle = document.getElementById("color_picker").value;
+    context.lineCap = "round";
 }
 
 
 function setCanvasSize() {
-    canvas.canvas.height = window.innerHeight;
-    canvas.canvas.width = window.innerWidth;
+    context.canvas.height = window.innerHeight;
+    context.canvas.width = window.innerWidth;
+}
+
+var slider = document.getElementById("line_width_picker");
+var output = document.getElementById("line_width_label");
+output.innerHTML = slider.value;
+
+slider.oninput = function() {
+    output.innerHTML = this.value;
 }
