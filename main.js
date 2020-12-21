@@ -8,8 +8,11 @@ var brush = {
     color: '#000',
     lineWidth: 30
 }
-var strokes = []
+var strokes = [];
 var currentStroke = null;
+
+var removedStrokes = [];
+var lastWasUndo = false;
 
 var posX = 0;
 var posY = 0;
@@ -26,6 +29,8 @@ function init() {
     setStrokeProperties();
     setupSliderLabel();
 
+    window.addEventListener("resize", handleWindowResize);
+
     canvas.addEventListener("mousemove", mouseMove);
     canvas.addEventListener("mousedown", mouseDown);
     canvas.addEventListener("mouseup", mouseUp);
@@ -38,9 +43,6 @@ function init() {
     document.getElementById("line_width_picker").addEventListener("input", function() {
         brush.lineWidth = this.value;
     });
-
-    context.lineCap = "round";
-    context.lineJoin = "round";
 }
 
 function draw() {
@@ -77,6 +79,11 @@ function addCurrentStrokePoint(posX, posY) {
 }
 
 function mouseDown(e) {
+    if (lastWasUndo) {
+        removedStrokes = [];
+        lastWasUndo = false;
+    }
+
     currentStroke = {
         color: brush.color,
         lineWidth: brush.lineWidth,
@@ -120,6 +127,9 @@ function mouseUp(e) {
 function setStrokeProperties() {
     context.lineWidth = brush.lineWidth;
     context.strokeStyle = brush.color;
+
+    context.lineCap = "round";
+    context.lineJoin = "round";
 }
 
 
@@ -177,4 +187,23 @@ function setupSliderLabel() {
     slider.oninput = function() {
         output.innerHTML = this.value;
     }
+}
+
+function handleWindowResize() {
+    setCanvasSize();
+    setStrokeProperties();
+    draw();
+}
+
+function undo() {
+    if (strokes.length > 0)
+        removedStrokes.push(strokes.pop())
+    draw();
+    lastWasUndo = true;
+}
+
+function redo() {
+    if (removedStrokes.length > 0)
+        strokes.push(removedStrokes.pop())
+    draw();
 }
