@@ -18,6 +18,9 @@
         <input id="color_picker" type="color" name="color">
         <input id="line_width_picker" type="range" step="1" max="120" min="1" value="30" />
         <span id="line_width_label"></span>
+        <button id="save_image" onclick="saveImage();">Save Image</button>
+        <input id="file_picker" type="file" />
+        <button id="load_image" onclick="loadImage();">Load Image</button>
     </div>
 
     <canvas id="main_canvas"></canvas>

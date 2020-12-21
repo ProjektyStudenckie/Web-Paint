@@ -14,6 +14,7 @@ var posX = 0;
 var posY = 0;
 
 setCanvasSize();
+setCanvasBackground();
 setCanvasProperties();
 
 function setPosition(e) {
@@ -36,6 +37,8 @@ function drawPath(e) {
 }
 
 function drawPoint(e) {
+    setCanvasProperties();
+
     context.beginPath();
 
     context.moveTo(posX, posY);
@@ -62,4 +65,45 @@ output.innerHTML = slider.value;
 
 slider.oninput = function() {
     output.innerHTML = this.value;
+}
+
+
+function setCanvasBackground() {
+    context.fillStyle = "#fff";
+    context.fillRect(0, 0, canvas.width, canvas.height);
+}
+
+
+function saveImage() {
+    var image = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
+
+    var a = document.createElement('a');
+    a.href = image;
+    a.download = "test.png";
+    document.body.appendChild(a);
+    a.click();
+}
+
+
+function loadImage() {
+    var input, file, fr, img;
+
+    input = document.getElementById('file_picker');
+
+    if (input.files[0]) {
+        file = input.files[0];
+        fr = new FileReader();
+        fr.onload = createImage;
+        fr.readAsDataURL(file);
+    }
+
+    function createImage() {
+        img = new Image();
+        img.onload = imageLoaded;
+        img.src = fr.result;
+    }
+
+    function imageLoaded() {
+        context.drawImage(img, 0, 0);
+    }
 }
