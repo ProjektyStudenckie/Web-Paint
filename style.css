@@ -12,6 +12,7 @@ body {
     padding: 1em;
 }
 
-#line_width_label {
+#line_width_label,
+#opacity_label {
     font-weight: bold;
 }

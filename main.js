@@ -5,8 +5,9 @@ var context;
 var brush = {
     x: 0,
     y: 0,
-    color: '#000',
-    lineWidth: 30
+    color: '#000000',
+    alpha: 'ff',
+    lineWidth: 30,
 }
 var strokes = [];
 var currentStroke = null;
@@ -27,7 +28,7 @@ function init() {
     setCanvasSize();
     setCanvasBackground();
     setStrokeProperties();
-    setupSliderLabel();
+    setupSlidersLabels();
 
     window.addEventListener("resize", handleWindowResize);
 
@@ -42,6 +43,12 @@ function init() {
 
     document.getElementById("line_width_picker").addEventListener("input", function() {
         brush.lineWidth = this.value;
+    });
+
+    document.getElementById("opacity_picker").addEventListener("input", function() {
+        var alpha = parseInt(this.value).toString(16);
+        if (alpha.length == 1) alpha = "0" + alpha;
+        brush.alpha = alpha;
     });
 }
 
@@ -71,11 +78,11 @@ function setPosition(e) {
 }
 
 function addCurrentStrokePoint(posX, posY) {
-    currentStroke.points.push({
-        x: posX,
-        y: posY
-    });
-    console.log(posX + " " + posY);
+    if (currentStroke)
+        currentStroke.points.push({
+            x: posX,
+            y: posY
+        });
 }
 
 function mouseDown(e) {
@@ -85,12 +92,10 @@ function mouseDown(e) {
     }
 
     currentStroke = {
-        color: brush.color,
+        color: brush.color + brush.alpha,
         lineWidth: brush.lineWidth,
         points: []
     }
-
-    setStrokeProperties();
 
     strokes.push(currentStroke)
 
@@ -101,27 +106,18 @@ function mouseDown(e) {
 function mouseMove(e) {
     if (e.buttons !== 1) return;
 
-    context.beginPath();
-
-    context.moveTo(posX, posY);
     addCurrentStrokePoint(posX, posY);
     setPosition(e);
-    context.lineTo(posX, posY);
     addCurrentStrokePoint(posX, posY);
 
-    context.stroke();
+    draw();
 }
 
 function mouseUp(e) {
-
-    context.beginPath();
-
-    context.moveTo(posX, posY);
-    context.lineTo(posX - 1, posY);
     addCurrentStrokePoint(posX, posY);
-    addCurrentStrokePoint(posX - 1, posY);
+    addCurrentStrokePoint(posX - 0.01, posY);
 
-    context.stroke();
+    draw();
 }
 
 function setStrokeProperties() {
@@ -179,9 +175,17 @@ function loadImage() {
     }
 }
 
-function setupSliderLabel() {
+function setupSlidersLabels() {
     var slider = document.getElementById("line_width_picker");
     var output = document.getElementById("line_width_label");
+    output.innerHTML = slider.value;
+
+    slider.oninput = function() {
+        output.innerHTML = this.value;
+    }
+
+    slider = document.getElementById("opacity_picker");
+    output = document.getElementById("opacity_label");
     output.innerHTML = slider.value;
 
     slider.oninput = function() {
@@ -205,5 +209,11 @@ function undo() {
 function redo() {
     if (removedStrokes.length > 0)
         strokes.push(removedStrokes.pop())
+    draw();
+}
+
+function clearCanvas() {
+    strokes = []
+    removedStrokes = []
     draw();
 }
