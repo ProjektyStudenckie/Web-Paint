@@ -18,6 +18,8 @@ var lastWasUndo = false;
 var posX = 0;
 var posY = 0;
 
+var backgroundImage = null
+
 init();
 
 
@@ -54,6 +56,9 @@ function init() {
 
 function draw() {
     context.clearRect(0, 0, canvas.width, canvas.height);
+
+    if (backgroundImage)
+        context.drawImage(backgroundImage, 0, 0);
 
     for (var i = 0; i < strokes.length; i++) {
         var s = strokes[i];
@@ -168,28 +173,26 @@ function loadImage() {
         img = new Image();
         img.onload = imageLoaded;
         img.src = fr.result;
+        backgroundImage = img;
     }
 
     function imageLoaded() {
         context.drawImage(img, 0, 0);
+        draw();
     }
 }
 
 function setupSlidersLabels() {
-    var slider = document.getElementById("line_width_picker");
-    var output = document.getElementById("line_width_label");
-    output.innerHTML = slider.value;
+    document.getElementById("line_width_label").innerHTML = document.getElementById("line_width_picker").value;
 
-    slider.oninput = function() {
-        output.innerHTML = this.value;
+    document.getElementById("line_width_picker").oninput = function() {
+        document.getElementById("line_width_label").innerHTML = this.value;
     }
 
-    slider = document.getElementById("opacity_picker");
-    output = document.getElementById("opacity_label");
-    output.innerHTML = slider.value;
+    document.getElementById("opacity_label").innerHTML = document.getElementById("opacity_picker").value;
 
-    slider.oninput = function() {
-        output.innerHTML = this.value;
+    document.getElementById("opacity_picker").oninput = function() {
+        document.getElementById("opacity_label").innerHTML = this.value;
     }
 }
 
@@ -215,5 +218,6 @@ function redo() {
 function clearCanvas() {
     strokes = []
     removedStrokes = []
+    backgroundImage = null
     draw();
 }
