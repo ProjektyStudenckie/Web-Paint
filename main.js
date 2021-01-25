@@ -8,6 +8,7 @@ var brush = {
     color: '#000000',
     alpha: 'ff',
     lineWidth: 30,
+    shadowBlur: 0
 }
 var strokes = [];
 var currentStroke = null;
@@ -41,11 +42,15 @@ function init() {
     canvas.addEventListener("mousemove", mouseMove);
     canvas.addEventListener("mousedown", mouseDown);
     canvas.addEventListener("mouseup", mouseUp);
-    canvas.addEventListener("mouseenter", setPosition);
+    canvas.addEventListener("mouseenter", setMousePosition);
 
     canvas.addEventListener("touchmove", mouseMove);
     canvas.addEventListener("touchstart", mouseDown);
     canvas.addEventListener("touchend", mouseUp);
+
+    document.getElementById("glow_effect").addEventListener("input", function() {
+        brush.shadowBlur = this.checked ? 10 : 0
+    });
 
     document.getElementById("color_picker").addEventListener("input", function() {
         brush.color = this.value;
@@ -72,6 +77,8 @@ function draw() {
         var s = strokes[i];
         context.strokeStyle = s.color;
         context.lineWidth = s.lineWidth;
+        context.shadowColor = s.shadowColor;
+        context.shadowBlur = s.shadowBlur;
         context.beginPath();
         context.moveTo(s.points[0].x, s.points[0].y);
 
@@ -82,12 +89,6 @@ function draw() {
 
         context.stroke();
     }
-}
-
-
-function setPosition(e) {
-    posX = e.offsetX || e.touches[0].clientX;
-    posY = e.offsetY || e.touches[0].clientY;
 }
 
 function setMousePosition(event) {
@@ -120,6 +121,8 @@ function mouseDown(e) {
     currentStroke = {
         color: brush.color + brush.alpha,
         lineWidth: brush.lineWidth,
+        shadowColor: brush.color,
+        shadowBlur: brush.shadowBlur,
         points: []
     }
 
