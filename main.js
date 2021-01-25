@@ -20,6 +20,10 @@ var posY = 0;
 
 var backgroundImage = null
 
+const state = {
+    mousedown: false
+}
+
 init();
 
 
@@ -38,6 +42,10 @@ function init() {
     canvas.addEventListener("mousedown", mouseDown);
     canvas.addEventListener("mouseup", mouseUp);
     canvas.addEventListener("mouseenter", setPosition);
+
+    canvas.addEventListener("touchmove", mouseMove);
+    canvas.addEventListener("touchstart", mouseDown);
+    canvas.addEventListener("touchend", mouseUp);
 
     document.getElementById("color_picker").addEventListener("input", function() {
         brush.color = this.value;
@@ -78,8 +86,19 @@ function draw() {
 
 
 function setPosition(e) {
-    posX = e.offsetX;
-    posY = e.offsetY;
+    posX = e.offsetX || e.touches[0].clientX;
+    posY = e.offsetY || e.touches[0].clientY;
+}
+
+function setMousePosition(event) {
+    const clientX = event.clientX || event.touches[0].clientX;
+    const clientY = event.clientY || event.touches[0].clientY;
+    const { offsetLeft, offsetTop } = event.target;
+    const canvasX = clientX - offsetLeft;
+    const canvasY = clientY - offsetTop;
+
+    posX = canvasX;
+    posY = canvasY;
 }
 
 function addCurrentStrokePoint(posX, posY) {
@@ -91,6 +110,8 @@ function addCurrentStrokePoint(posX, posY) {
 }
 
 function mouseDown(e) {
+    state.mousedown = true;
+
     if (lastWasUndo) {
         removedStrokes = [];
         lastWasUndo = false;
@@ -104,21 +125,23 @@ function mouseDown(e) {
 
     strokes.push(currentStroke)
 
-    setPosition(e);
+    setMousePosition(e);
     addCurrentStrokePoint(e);
 }
 
 function mouseMove(e) {
-    if (e.buttons !== 1) return;
+    if (!state.mousedown) return;
 
     addCurrentStrokePoint(posX, posY);
-    setPosition(e);
+    setMousePosition(e);
     addCurrentStrokePoint(posX, posY);
 
     draw();
 }
 
 function mouseUp(e) {
+    state.mousedown = false;
+
     addCurrentStrokePoint(posX, posY);
     addCurrentStrokePoint(posX - 0.01, posY);
 
