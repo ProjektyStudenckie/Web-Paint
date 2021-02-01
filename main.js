@@ -13,17 +13,23 @@ var brush = {
 var strokes = [];
 var currentStroke = null;
 
+var shapePositions = [];
 var removedStrokes = [];
 var lastWasUndo = false;
 
 var posX = 0;
 var posY = 0;
 
+var starCircleX;
+var startCircleY;
+
 var backgroundImage = null
 
 const state = {
     mousedown: false
 }
+
+var type = Object.freeze({ "Drawing": 1, "Square": 2, "Circle": 3 })
 
 init();
 
@@ -39,6 +45,8 @@ function init() {
 
     window.addEventListener("resize", handleWindowResize);
 
+    type = 0;
+
     canvas.addEventListener("mousemove", mouseMove);
     canvas.addEventListener("mousedown", mouseDown);
     canvas.addEventListener("mouseup", mouseUp);
@@ -48,23 +56,30 @@ function init() {
     canvas.addEventListener("touchstart", mouseDown);
     canvas.addEventListener("touchend", mouseUp);
 
-    document.getElementById("glow_effect").addEventListener("input", function() {
+    document.getElementById("glow_effect").addEventListener("input", function () {
         brush.shadowBlur = this.checked ? 10 : 0
     });
 
-    document.getElementById("color_picker").addEventListener("input", function() {
+    document.getElementById("color_picker").addEventListener("input", function () {
         brush.color = this.value;
     });
 
-    document.getElementById("line_width_picker").addEventListener("input", function() {
+    document.getElementById("line_width_picker").addEventListener("input", function () {
         brush.lineWidth = this.value;
     });
 
-    document.getElementById("opacity_picker").addEventListener("input", function() {
+    document.getElementById("opacity_picker").addEventListener("input", function () {
         var alpha = parseInt(this.value).toString(16);
         if (alpha.length == 1) alpha = "0" + alpha;
         brush.alpha = alpha;
     });
+}
+
+function changeSelect() {
+
+    var selector = document.getElementById("selector");
+    type = parseInt(selector.value);
+    console.log(type.toString())
 }
 
 function draw() {
@@ -110,44 +125,79 @@ function addCurrentStrokePoint(posX, posY) {
         });
 }
 
+function ClearCurrenStrokePionts() {
+    if (currentStroke) {
+        currentStroke.points = [];
+    }
+}
+
+
 function mouseDown(e) {
-    state.mousedown = true;
+    switch (type) {
+        case 0:
+            state.mousedown = true;
 
-    if (lastWasUndo) {
-        removedStrokes = [];
-        lastWasUndo = false;
+            if (lastWasUndo) {
+                removedStrokes = [];
+                lastWasUndo = false;
+            }
+
+            currentStroke = {
+                color: brush.color + brush.alpha,
+                lineWidth: brush.lineWidth,
+                shadowColor: brush.color,
+                shadowBlur: brush.shadowBlur,
+                points: []
+            }
+
+            strokes.push(currentStroke)
+
+            setMousePosition(e);
+            addCurrentStrokePoint(posX, posY);
+            break;
+        case 1:
+            state.mousedown = true;
+            setMousePosition(e);
+            startCircle(posX, posY)
+            break;
+        case 2:
+            state.mousedown = true;
+            setMousePosition(e);
+            startCircle(posX, posY)
+            break;
     }
-
-    currentStroke = {
-        color: brush.color + brush.alpha,
-        lineWidth: brush.lineWidth,
-        shadowColor: brush.color,
-        shadowBlur: brush.shadowBlur,
-        points: []
-    }
-
-    strokes.push(currentStroke)
-
-    setMousePosition(e);
-    addCurrentStrokePoint(e);
 }
 
 function mouseMove(e) {
+    console.log(type.toString())
     if (!state.mousedown) return;
 
-    addCurrentStrokePoint(posX, posY);
-    setMousePosition(e);
-    addCurrentStrokePoint(posX, posY);
-
+    switch (type) {
+        case 0:
+            setMousePosition(e);
+            addCurrentStrokePoint(posX, posY);
+            break;
+        case 1:
+            setMousePosition(e);
+            refreshShape(posX, posY);
+            break;
+        case 2:
+            setMousePosition(e);
+            refreshShape(posX, posY);
+            break;
+    }
     draw();
 }
 
 function mouseUp(e) {
+    console.log(type.toString())
+    switch (type) {
+        case 0:
+            addCurrentStrokePoint(posX, posY);
+            addCurrentStrokePoint(posX - 0.01, posY);
+            break;
+    }
     state.mousedown = false;
-
-    addCurrentStrokePoint(posX, posY);
-    addCurrentStrokePoint(posX - 0.01, posY);
-
     draw();
 }
 
@@ -211,13 +261,13 @@ function loadImage() {
 function setupSlidersLabels() {
     document.getElementById("line_width_label").innerHTML = document.getElementById("line_width_picker").value;
 
-    document.getElementById("line_width_picker").oninput = function() {
+    document.getElementById("line_width_picker").oninput = function () {
         document.getElementById("line_width_label").innerHTML = this.value;
     }
 
     document.getElementById("opacity_label").innerHTML = document.getElementById("opacity_picker").value;
 
-    document.getElementById("opacity_picker").oninput = function() {
+    document.getElementById("opacity_picker").oninput = function () {
         document.getElementById("opacity_label").innerHTML = this.value;
     }
 }
@@ -226,6 +276,59 @@ function handleWindowResize() {
     setCanvasSize();
     setStrokeProperties();
     draw();
+}
+
+function startCircle(posX, posY) {
+    startCircleX = posX;
+    startCircleY = posY;
+
+    currentStroke = {
+        color: brush.color + brush.alpha,
+        lineWidth: brush.lineWidth,
+        shadowColor: brush.color,
+        shadowBlur: brush.shadowBlur,
+        points: []
+    }
+    strokes.push(currentStroke);
+}
+
+function refreshShape(posX, posY) {
+
+    ClearCurrenStrokePionts();
+    switch (type) {
+        case 1:
+            calculateBox(startCircleX, startCircleY, posX, posY);
+            break;
+        case 2:
+            calculateCircle(startCircleX, startCircleY, posX, posY);
+            break;
+    }
+
+}
+function calculateBox(posX, posY, posX2, posY2) {
+
+        addCurrentStrokePoint(posX, posY);
+        addCurrentStrokePoint(posX2, posY);
+        addCurrentStrokePoint(posX2, posY2);
+        addCurrentStrokePoint(posX, posY2);
+        addCurrentStrokePoint(posX, posY);
+}
+
+
+
+function calculateCircle(posX, posY, posX2, posY2) {
+    var midX = (posX + posX2) / 2;
+    var midY = (posY + posY2) / 2;
+
+    var radius = Math.sqrt(Math.pow(posX - posX2, 2) + Math.pow(posY - posY2, 2)) / 2;
+
+    for (var i = 0; i < 360; i++) {
+
+        var x = midX + radius * Math.cos(2 * Math.PI * i / 360);
+        var y = midY + radius * Math.sin(2 * Math.PI * i / 360);
+
+        addCurrentStrokePoint(x, y);
+    }
 }
 
 function undo() {
