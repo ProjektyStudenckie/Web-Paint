@@ -16,8 +16,8 @@
 <body>
     <div id="properties_panel">
 
-        <button id="undo_btn" class="btn" onclick="undo();"><i class="fa fa-step-backward"></i> undo</button>
-        <button id="redo_btn" class="btn" onclick="redo();"><i class="fa fa-undo"></i> redo</button>
+        <button id="undo_btn" class="btn" onclick="undo();"><i class="fa fa-undo"></i> undo</button>
+        <button id="redo_btn" class="btn" onclick="redo();"><i id="mirror_icon" class="fa fa-undo"></i> redo</button>
         <button id="clear_btn" class="btn" onclick="clearCanvas();"><i class="fa fa-trash"></i> clear</button>
 
         <select id="selector" onchange="changeSelect();">
@@ -28,15 +28,15 @@
 
         <input id="glow_effect" type="checkbox" />
         <input id="color_picker" type="color" name="color">
-        
+
         <label for="opacity_picker">opacity:</label>
         <input id="opacity_picker" type="range" step="1" max="255" min="1" value="255" />
         <span id="opacity_label"></span>
-        
+
         <label for="line_width_picker">line width:</label>
         <input id="line_width_picker" type="range" step="1" max="120" min="1" value="30" />
         <span id="line_width_label"></span>
-        
+
         <button id="save_image" class="btn" onclick="saveImage();"><i class="fa fa-floppy-o"></i> Save Image</button>
         <input id="file_picker" class="btn" type="file"></input>
         <button id="load_image" class="btn" onclick="loadImage();"><i class="fa fa-spinner"></i> Load Image</button>
