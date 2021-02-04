@@ -135,6 +135,7 @@ span {
 
 label {
     margin-left: 20px;
+    vertical-align: middle;
 }
 
 #save_image,
@@ -222,7 +223,6 @@ label {
         -webkit-transition: .2s;
         transition: opacity .2s;
         margin-top: 10px;
-        vertical-align:top;
       }
       
       input[type=range]:hover {
@@ -251,7 +251,8 @@ label {
       }
     
       label {
-          margin-left: 20px;
+          margin-left: 0px;
+          vertical-align: middle;
       }
     
     #save_image, #load_image {
