@@ -196,6 +196,12 @@ function mouseUp(e) {
             addCurrentStrokePoint(posX, posY);
             addCurrentStrokePoint(posX - 0.01, posY);
             break;
+        case 1:
+            refreshShape(posX, posY);
+            break;
+        case 2:
+            refreshShape(posX, posY);
+            break;
     }
     state.mousedown = false;
     draw();
@@ -307,11 +313,11 @@ function refreshShape(posX, posY) {
 }
 function calculateBox(posX, posY, posX2, posY2) {
 
-        addCurrentStrokePoint(posX, posY);
-        addCurrentStrokePoint(posX2, posY);
-        addCurrentStrokePoint(posX2, posY2);
-        addCurrentStrokePoint(posX, posY2);
-        addCurrentStrokePoint(posX, posY);
+    addCurrentStrokePoint(posX, posY);
+    addCurrentStrokePoint(posX2, posY);
+    addCurrentStrokePoint(posX2, posY2);
+    addCurrentStrokePoint(posX, posY2);
+    addCurrentStrokePoint(posX, posY);
 }
 
 
