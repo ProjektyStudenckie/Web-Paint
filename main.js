@@ -47,6 +47,17 @@ function init() {
     setupSlidersLabels();
 
     window.addEventListener("resize", handleWindowResize);
+    window.addEventListener("orientationchange", function (event) { 
+        w = window.innerWidth;
+        h = window.innerHeight;
+
+        window.innerWidth = h;
+        window.innerHeight = w;
+
+        setCanvasSize();
+        setStrokeProperties();
+        draw();
+    });
 
     type = 0;
 
