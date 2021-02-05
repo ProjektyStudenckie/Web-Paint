@@ -57,8 +57,10 @@ function init() {
     canvas.addEventListener("touchend", mouseUp);
 
     document.getElementById("glow_effect").addEventListener("input", function () {
-        brush.shadowBlur = this.checked ? 10 : 0
+        brush.shadowBlur = this.value;
     });
+
+    
 
     document.getElementById("color_picker").addEventListener("input", function () {
         brush.color = this.value;
@@ -276,6 +278,12 @@ function setupSlidersLabels() {
     document.getElementById("opacity_picker").oninput = function () {
         document.getElementById("opacity_label").innerHTML = this.value;
     }
+
+    document.getElementById("glow_label").innerHTML = document.getElementById("glow_effect").value;
+
+    document.getElementById("glow_effect").oninput = function () {
+        document.getElementById("glow_label").innerHTML = this.value;
+    }
 }
 
 function handleWindowResize() {
@@ -356,3 +364,7 @@ function clearCanvas() {
     backgroundImage = null
     draw();
 }
+
+function toggleSidebar(ref){
+    document.getElementById("sidebar").classList.toggle('active');
+  }
