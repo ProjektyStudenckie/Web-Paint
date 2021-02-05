@@ -22,16 +22,69 @@
             <span></span>
         </div>  
 
-        <div class="list">
+        <div>
+            <button id="undo_btn" class="btn" onclick="undo();"><i class="fa fa-step-backward"></i> undo</button>
+            <button id="redo_btn" class="btn" onclick="redo();"><i class="fa fa-undo"></i> redo</button>
+            <button id="clear_btn" class="btn" onclick="clearCanvas();"><i class="fa fa-trash"></i> clear</button>  
+        
+            <select id="selector" onchange="changeSelect();">
+                <option value="0">drawing</option>
+                <option value="1">square</option>
+                <option value="2">circle</option>
+            </select>
+
+            <input id="color_picker" type="color" name="color">
+
+        <div>
+        <div>
+            <label for="glow_effect">glow effect:</label>
+            <input id="glow_effect" type="range" step="1" max="100" min="0" value="0" />
+            <span id="glow_label"></span>
+
+
+            <label for="opacity_picker">opacity:</label>
+            <input id="opacity_picker" type="range" step="1" max="255" min="1" value="255" />
+            <span id="opacity_label"></span>
+
+            <label for="line_width_picker">line width:</label>
+            <input id="line_width_picker" type="range" step="1" max="120" min="1" value="30" />
+            <span id="line_width_label"></span>
+        </div>
+
+        <div>
+            <button id="load_image"  onclick="loadImage();"><i class="fa fa-spinner"></i> Load Image</button>
+
+            <input id="file_picker"  type="file"></input>
+
+            <button id="save_image"  onclick="saveImage();"><i class="fa fa-floppy-o"></i> Save Image</button>
+        </div>
+
+    </div>
+
+    <canvas id="main_canvas"></canvas>
+
+    <script src="main.js"></script>
+</body>
+
+</html>
+
+
+
+
+
+
+
+
+
+
+        <!-- <div class="list">
 
             <div class="item">
-                <button id="undo_btn" class="btn" onclick="undo();"><i class="fa fa-step-backward"></i> undo</button>
+
             </div>
             <div class="item">
-                <button id="redo_btn" class="btn" onclick="redo();"><i class="fa fa-undo"></i> redo</button>
             </div>
             <div class="item">
-                <button id="clear_btn" class="btn" onclick="clearCanvas();"><i class="fa fa-trash"></i> clear</button>  
             </div>
 
             <div class="item">
@@ -43,7 +96,6 @@
             </div>
 
             <div class="item">
-                <!-- <input id="glow_effect" type="checkbox" /> -->
                 <label for="glow_effect">glow effect:</label>
                 <input id="glow_effect" type="range" step="1" max="100" min="0" value="0" />
                 <span id="glow_label"></span>
@@ -77,13 +129,4 @@
                 <button id="save_image" class="btn" onclick="saveImage();"><i class="fa fa-floppy-o"></i> Save Image</button>
             </div>
 
-        </div>
-
-    </div>
-
-    <canvas id="main_canvas"></canvas>
-
-    <script src="main.js"></script>
-</body>
-
-</html>
+        </div>  -->

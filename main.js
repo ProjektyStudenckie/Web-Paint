@@ -23,7 +23,10 @@ var posY = 0;
 var starCircleX;
 var startCircleY;
 
-var backgroundImage = null
+var backgroundImage = null;
+
+var opened = false;
+var newY = 0;
 
 const state = {
     mousedown: false
@@ -119,6 +122,23 @@ function setMousePosition(event) {
 
     posX = canvasX;
     posY = canvasY;
+
+    var size = window.screen.availWidth;
+
+    if (size < 850 && size >= 600)
+        newY = 150;
+    else if (size < 600 && size > 450)
+        newY = 180;
+    else if (size <= 450 && size > 400)
+        newY = 250;
+    else if (size <= 400)
+        newY = 300;
+    else 
+        newY = 120;
+
+    if (!opened){
+        posY += newY;
+    }
 }
 
 function addCurrentStrokePoint(posX, posY) {
@@ -194,7 +214,7 @@ function mouseMove(e) {
 }
 
 function mouseUp(e) {
-    
+
     console.log(type.toString())
     switch (type) {
         case 0:
@@ -370,4 +390,6 @@ function clearCanvas() {
 
 function toggleSidebar(ref){
     document.getElementById("sidebar").classList.toggle('active');
+    
+    opened = !opened;
 }
