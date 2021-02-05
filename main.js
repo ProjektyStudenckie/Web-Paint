@@ -47,6 +47,8 @@ function init() {
 
     type = 0;
 
+    // toggleSidebar("sss");
+
     canvas.addEventListener("mousemove", mouseMove);
     canvas.addEventListener("mousedown", mouseDown);
     canvas.addEventListener("mouseup", mouseUp);
@@ -192,6 +194,7 @@ function mouseMove(e) {
 }
 
 function mouseUp(e) {
+    
     console.log(type.toString())
     switch (type) {
         case 0:
@@ -367,4 +370,4 @@ function clearCanvas() {
 
 function toggleSidebar(ref){
     document.getElementById("sidebar").classList.toggle('active');
-  }
+}

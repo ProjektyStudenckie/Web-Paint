@@ -13,10 +13,9 @@ body {
 /* ============ sidebar ============ */
 #sidebar {
     position:absolute;
-    top:0px;
     left:-200px;
     width:200px;
-    height:800px;
+    height: 800px;
     background:#151719;
     transition:all 300ms linear;
   }
@@ -173,3 +172,7 @@ span {
 #load_image {
     color: black;
 }
+
+/* canvas {
+    overflow: hidden;
+} */
